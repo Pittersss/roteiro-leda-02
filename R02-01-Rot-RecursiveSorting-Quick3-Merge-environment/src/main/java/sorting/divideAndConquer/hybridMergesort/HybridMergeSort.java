@@ -1,6 +1,7 @@
 package sorting.divideAndConquer.hybridMergesort;
 
 import sorting.AbstractSorting;
+import util.Util;
 
 /**
  * A classe HybridMergeSort representa a implementação de uma variação do
@@ -28,9 +29,103 @@ public class HybridMergeSort<T extends Comparable<T>> extends
 
 	protected static int MERGESORT_APPLICATIONS = 0;
 	protected static int INSERTIONSORT_APPLICATIONS = 0;
+	
+	private int insertionSortCounter = 0;
+	private int mergeSortCounter = 0;
+	private boolean haveMergeSort = true;
 
-	public void sort(T[] array, int leftIndex, int rightIndex) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not implemented yet!");
+	public int getQntMergeSort()
+	{
+		return MERGESORT_APPLICATIONS;
+	}
+	public int getQntInsertionSort()
+	{
+		return INSERTIONSORT_APPLICATIONS;
+	}
+
+	public void sort(T[] array, int leftIndex, int rightIndex) 
+	{
+		insertionSortCounter = 0;
+		mergeSortCounter = 0;
+
+		if (array.length <= 4)
+		{
+			InsertionSort(array, leftIndex, rightIndex);
+		}
+		else{
+			if (haveMergeSort)
+			{
+				MERGESORT_APPLICATIONS += (array.length) - array.length -1;
+			}
+			if (leftIndex >= rightIndex)
+			{
+			}
+			else
+			{
+				mergeSort(array, leftIndex, rightIndex);
+			}
+		}
+		INSERTIONSORT_APPLICATIONS += insertionSortCounter;
+	}
+	public void InsertionSort(T[] array, int leftIndex, int rightIndex)
+	{
+		insertionSortCounter++;
+		for (int i = leftIndex + 1; i <= rightIndex; i++)
+		{
+			for (int j = i; j > leftIndex; j--)
+			{
+				if (array[j].compareTo(array[j-1]) < 0)
+				{
+					Util.swap(array, j - 1, j);
+				}
+			}
+		}
+	}
+	public void merge(T[] array, int leftIndex, int middle ,int rightIndex)
+	{
+		MERGESORT_APPLICATIONS++;
+		T[] helperArray = (T[]) new Comparable[array.length];
+
+		for(int i = leftIndex; i <= rightIndex; i++)
+		{
+			helperArray[i] = array[i];
+		}
+
+		int fistHalfIndex = leftIndex;
+		int secoundHalfIndex = middle + 1;
+		int indexOrdArray = leftIndex;
+		
+
+		while(fistHalfIndex <= middle && secoundHalfIndex <= rightIndex)
+		{
+			if (helperArray[fistHalfIndex].compareTo(helperArray[secoundHalfIndex]) > 0)
+			{
+				array[indexOrdArray] = helperArray[fistHalfIndex];
+				fistHalfIndex++;
+			}
+			else
+			{
+				array[indexOrdArray] = helperArray[secoundHalfIndex];
+				secoundHalfIndex++;
+			}
+			indexOrdArray++;
+		}
+
+		while (fistHalfIndex <= middle)
+		{
+			array[indexOrdArray] = helperArray[fistHalfIndex];
+			fistHalfIndex++;
+			indexOrdArray++;
+		}
+
+		
+	}
+	public void mergeSort(T[] array, int leftIndex, int rightIndex)
+	{
+		int middle = (rightIndex + leftIndex)/2;
+		sort(array, leftIndex, middle);
+		sort(array, middle + 1, rightIndex);
+		merge(array, leftIndex, middle, rightIndex);
+
 	}
 }
